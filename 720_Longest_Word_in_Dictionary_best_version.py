@@ -1,41 +1,32 @@
 class Solution(object):
     def longestWord(self, words):
-        words.sort(key=len) # Sorting the list by len
-        words_set = set(words) # Creating a set of all words
-        result = "" # Temporary result
+        words.sort(key=len) # Sorting words
+        solutions = set()   # set of solutions
+        longest_word=0      # tracking longest word
+        result = ""         # result
 
-        # Looping on words from the largest one to the smallest
-        for w in words[::-1]:
-
-            # If the actual word is smaller than the best one
-            # selected then no need to continue
-            if len(w) < len(result):
-                return result
-
-            # If len is one we can select this
-            # solution in specific cases
+        # Looping on increasing length words
+        for w in words:
             if len(w) == 1:
-                if len(result) == 0:
+                # if len == 1, it is a potential solution
+                solutions.add(w)
+                
+                if longest_word == 0:
+                    longest_word = 1
                     result = w
-                elif len(result) == 1 and w < result:
-                    result = w
-            # Otherwise, we check is the word can be the solution
+                if longest_word == 1:
+                    result = min(w, result)
             else:
-                sub_w = w[:-1]
+                # otherwise, we check if it can ben a solution
+                # then we check it is the best solution
+                if w[:-1] in solutions:
+                    solutions.add(w)
 
-                # Progressively checking that substrings
-                # are in the given list
-                while(True):
-                    if sub_w in words_set:
-                        if len(sub_w) > 1:
-                            sub_w = sub_w[:-1]
-                        else:
-                            # If the substring len is 1, we check if the
-                            # word can be the solution
-                            if len(w) > len(result) or (len(w) == len(result) and (w < result)):
-                                result = w
-                            break   
-                    else:
-                        break
+                    if len(w) > longest_word:
+                        longest_word = len(w)
+                        result = w
+                    if len(w) == longest_word:
+                        result = min(w, result)
+
         return result
         
